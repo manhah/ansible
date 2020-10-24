@@ -1,4 +1,4 @@
-# ansible_demos
+# ansible
 Some examples showing the use of Ansible.
 
 Requirements for all demos:
