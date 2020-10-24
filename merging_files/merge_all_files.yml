@@ -1,0 +1,27 @@
+---
+
+- name: Merge all files inside the desried path recursively based on a pattern
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    # Example paramters for merging PDFs
+    search_folder: "test_files"
+    search_pattern: "*.pdf"
+    cmd_prefix: "gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=merged_files.pdf -dBATCH"
+    cmd_suffix: ""
+
+  tasks:
+  - name: Find all files in the desired folder recursively according to the desired pattern
+    find:
+      paths: "{{ search_folder }}"
+      patterns: "{{ search_pattern }}"
+      recurse: yes
+    register: files_to_merge
+
+  - name: Extract and escape file paths
+    set_fact:
+      files_list: "{{ files_to_merge.files | map(attribute='path') | map('to_json') }}"
+
+  - name: Execute merge command
+    shell: "{{ cmd_prefix }} {{ files_list | join(' ') }} {{ cmd_suffix }}" 

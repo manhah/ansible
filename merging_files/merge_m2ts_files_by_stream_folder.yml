@@ -1,0 +1,20 @@
+---
+
+- name: Merge all m2ts files inside a STREAM folder in each subdirectory of the desired path
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    search_folder: "test_files"
+
+  tasks:
+  - name: Find all folders in the search folder
+    find:
+      paths: "{{ search_folder }}"
+      file_type: directory
+      recurse: no
+    register: folders_for_merge
+
+  - name: Loop through folders and merge all m2ts files inside each folder's STREAM directory
+    include_tasks: task_merge_m2ts_files_in_folder.yml
+    loop: "{{ folders_for_merge.files }}"
