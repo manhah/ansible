@@ -8,7 +8,7 @@
 
 - name: Escape files to merge
   set_fact:
-    files_list: "{{ files_to_merge.files | map(attribute='path') | map('to_json') | join(' ')}}"
+    files_list: "{{ files_to_merge.files | sort(attribute='path', reverse=True) | map(attribute='path') | map('to_json') | join(' +  ')}}"
 
 - name: Execute merge command to one singe MKV file
   shell: "mkvmerge -o {{ (item.path, '.mkv') | join('') | to_json }} {{ files_list }}"
